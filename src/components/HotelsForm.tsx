@@ -42,15 +42,26 @@ const HotelsForm = () => {
                     <>
                         {destinations.push(area.areaName)}
                         {area.zones.map((zone: any) => {
+                            if (area.areaName === zone.zoneName) {
+                                destinations.push(zone.zoneName)
+                            } else {
+                                destinations.push(zone.zoneName + ', ' + area.areaName)
+                            }
                             return(
                                 <>
-                                    {destinations.push(zone.zoneName + ', ' + area.areaName)}
+                                    
+                                    {destinations}
                                     {zone.hotels.map((hotel: any) => {
-                                        return(
+                                        if (area.areaName === zone.zoneName) {
+                                            hotels.push(hotel.hotelName + ', ' + zone.zoneName)
+                                        } else {
                                             hotels.push(hotel.hotelName + ', ' + zone.zoneName + ', ' + area.areaName)
-                                        )
+                                        }
+                                        return hotels
+                                        
                                     })}
-                                </> 
+                                 
+                                </>
                             )
                         })}
                     </>
@@ -77,6 +88,8 @@ const HotelsForm = () => {
 
         register, 
         handleSubmit,  
+        setValue,
+        getValues,
         formState: { errors } 
 
     } = useForm<Inputs>();
@@ -94,6 +107,10 @@ const HotelsForm = () => {
             setMinCheckOutDate(moment(event).add(1, 'days').format('YYYY-MM-DD'));
             setMaxCheckOutDate(moment(event).add(30, 'days').format('YYYY-MM-DD'));
             setIsCheckInSelected(true);
+            const data = getValues('formDateCheckOut')
+            if (moment(event) > moment(data) || moment(event).add(30, 'days') < moment(data)){
+                setValue('formDateCheckOut', '')
+            }
         }
     }
 
